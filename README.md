@@ -1,6 +1,6 @@
 # ac_voltage_current
 Microntroller Atmega32.
-This project i have created using scheduler method using timer.
+AC RMS Voltage, Current and Frequency measurement using scheduler method using timer.
 
 Using Timer0, I have triggered ADC for reading ADC values of Voltage and Current.
 
