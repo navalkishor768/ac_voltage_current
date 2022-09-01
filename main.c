@@ -18,7 +18,7 @@
 
 #define T0_CNT_VAL			30
 #define	T1_PRESCALAR		1024
-#define HZ_SAMPLE_CNT		10
+#define HZ_SAMPLE_CNT		5
 #define	BASE				(F_CPU/(T1_PRESCALAR*2))
 #define SAMPLE_CNT			100
 #define PEAK_VAC			311
@@ -57,10 +57,10 @@ void init_t1_input_capture(void)	 /* function to initialize Timer1 input capture
 
 ISR(TIMER2_OVF_vect)
 {
-	static	int count_1000ms=0;
-	static	int count_500ms=0;
+	static unsigned int count_1000ms=0;
+	static unsigned int count_500ms=0;
 	
-	static long int adcVacSqSmpl=0,locSampleCNT=0,adcCurrSmpl=0,locCurrSmplCNT=0;
+	static unsigned long int adcVacSqSmpl=0,locSampleCNT=0,adcCurrSmpl=0,locCurrSmplCNT=0;
 	adcVac = ReadADC(0);
 	
 	if(adcVac >= 200)	
@@ -109,7 +109,7 @@ int main(void)
 	uart_init(9600);
 	
 	lcd_init(LCD_DISP_ON);
-	_delay_ms(100);
+	//_delay_ms(100);
 	
 	init_t2();
 	
@@ -117,7 +117,7 @@ int main(void)
 	
 	sei();
 	
-	_delay_ms(100);
+	//_delay_ms(100);
 	
     while (1) 
     
@@ -145,7 +145,7 @@ int main(void)
 			sprintf(str,"\rFrequency = %s Hz",str1);
 			uart_txstr(str);
 			uart_tx('\r');
-			TIMSK = 0x41;		// enable timer interrupts
+			TIMSK = 0x40;		// enable timer interrupts
 			
 			flag_1000ms = 0;
 		}
