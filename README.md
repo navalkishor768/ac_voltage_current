@@ -17,8 +17,8 @@ Once I have done gettin frequency, enabling back Timer0 and Timer2 Overflow inte
 
 Below is the Proteus Schematic and Video.
 
-https://drive.google.com/file/d/1KmCNWVMO9FcnIq8vtMubtL_p--VPMP1o/view?usp=sharing
+https://drive.google.com/file/d/1UQ8jmw-vFK8OMxbGe88OrKq7GnHCb_R1/view?usp=sharing
 
-![ac_voltage_current](https://user-images.githubusercontent.com/111571035/187276709-e4392162-6768-46d2-9d4f-e91c4bd67489.SVG)
+![ac_voltage_current2](https://user-images.githubusercontent.com/111571035/187989607-8c8c72ba-c6be-413e-b8f2-4d56c63ad7be.SVG)
 
-https://drive.google.com/file/d/1KmCNWVMO9FcnIq8vtMubtL_p--VPMP1o/view?usp=sharing
+https://drive.google.com/file/d/1UQ8jmw-vFK8OMxbGe88OrKq7GnHCb_R1/view?usp=sharing
