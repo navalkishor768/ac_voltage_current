@@ -30,9 +30,9 @@
 //#define MV_PER_AMP		0.066		// for ACS712 30A module
 #define error_per			1.1
 
-unsigned int adcVac,adcVacMax,adcCurr,i,j,VacSampleCNT = 0,CurrSampleCNT=0,sampleCNT=0;
+unsigned int adcVac,adcVacMax,adcCurr,i,j,currCounts=0,voltCounts;
 unsigned long int adcVacSq=0,adcCurrMax=0;
-float RmsVoltage,RmsCurrent,freq;
+float RmsVoltage,RmsCurrent,freq,rmsVacAvg;
 unsigned char str[50],str1[10];
 
 volatile int flag_1000ms=0;
@@ -59,33 +59,36 @@ ISR(TIMER2_OVF_vect)
 {
 	static unsigned int count_1000ms=0;
 	static unsigned int count_500ms=0;
+	static unsigned int count_20ms=0;
 	
-	static unsigned long int adcVacSqSmpl=0,locSampleCNT=0,adcCurrSmpl=0,locCurrSmplCNT=0;
+	static unsigned long int adcVacSqSmplTemp=0,voltCountsTemp=0,adcCurrSmplTemp=0,currCountsTemp=0;
+	
 	adcVac = ReadADC(0);
-	
-	if(adcVac >= 200)	
+	if(adcVac > 200)	
 	{
-		adcVacSqSmpl += adcVac * ADC_REAL_MUL * adcVac * ADC_REAL_MUL;
-		locSampleCNT++;
+		adcVacSqSmplTemp += (ADC_REAL_MUL * adcVac * adcVac * ADC_REAL_MUL);
+		voltCountsTemp++;
 	}
 	
 	adcCurr = ReadADC(1);
-	if(adcCurr >= adcCurrSmpl)
+	if(adcCurr >= adcCurrSmplTemp)
 	{
-		adcCurrSmpl = adcCurr;
-		locCurrSmplCNT++;
+		adcCurrSmplTemp = adcCurr;
+		currCountsTemp++;
 	}
 	
 	if(count_1000ms == 1000)
 	{	
-		adcCurrMax = adcCurrSmpl;
-		adcVacSq = adcVacSqSmpl;
-		adcVacSqSmpl = 0;
-		adcCurrSmpl = 0;
-		sampleCNT = locSampleCNT;
-		CurrSampleCNT = locCurrSmplCNT;
-		locSampleCNT=0;
-		locCurrSmplCNT = 0;
+		adcVacSq = adcVacSqSmplTemp;
+		adcVacSqSmplTemp = 0;
+		voltCounts = voltCountsTemp;
+		voltCountsTemp = 0;
+		
+		adcCurrMax = adcCurrSmplTemp;
+		adcCurrSmplTemp = 0;
+		currCounts = currCountsTemp;
+		currCountsTemp = 0;
+		
 		flag_1000ms = 1;
 		count_1000ms = 0;
 	}
@@ -95,7 +98,7 @@ ISR(TIMER2_OVF_vect)
 		flag_500ms = 1;
 		count_500ms = 0;
 	}
-	
+
 	count_500ms++;
 	count_1000ms++;
 	TCNT2 = 240;
@@ -124,7 +127,8 @@ int main(void)
 		
 		if(flag_1000ms == 1)
 		{	
-			RmsVoltage = SCALE_MUL_FAC * sqrt(adcVacSq / sampleCNT) * error_per;
+			
+			RmsVoltage = SCALE_MUL_FAC * sqrt(adcVacSq / voltCounts) * error_per;
 			
 			RmsCurrent = (adcCurrMax - 512) * 0.707 * ADC_REAL_MUL / MV_PER_AMP;
 			
